@@ -1,11 +1,6 @@
 package api
 
-import (
-	"io"
-	"net/http"
-)
-
-func ExampleHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "text/plain")
-	io.WriteString(w, `Hello, SSL-API-world!`)
+// An Action is a unit of execution for the API
+type Action interface {
+	Execute() error
 }
