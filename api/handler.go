@@ -35,7 +35,7 @@ func (handler *HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = action.Execute(r.Context(), handler.Firestore)
+	response, err := action.Execute(r.Context(), handler.Firestore)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, fmt.Sprintf("err: %+v", err))
@@ -43,5 +43,5 @@ func (handler *HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Content-Type", "text/plain")
-	io.WriteString(w, "OK")
+	w.Write(response)
 }

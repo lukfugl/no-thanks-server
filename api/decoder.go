@@ -6,7 +6,7 @@ import (
 )
 
 type actionDecoder struct {
-	Echo *EchoAction `json:"echo"`
+	CreateGame *CreateGameAction
 }
 
 func decodeAction(bytes []byte) (Action, error) {
@@ -15,8 +15,8 @@ func decodeAction(bytes []byte) (Action, error) {
 	if err != nil {
 		return nil, err
 	}
-	if decoder.Echo != nil {
-		return decoder.Echo, nil
+	if decoder.CreateGame != nil {
+		return decoder.CreateGame, nil
 	}
 	return nil, fmt.Errorf("unknown action")
 }

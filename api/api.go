@@ -8,5 +8,5 @@ import (
 
 // An Action is a unit of execution for the API
 type Action interface {
-	Execute(ctx context.Context, fs *firestore.Client) error
+	Execute(ctx context.Context, fs *firestore.Client) ([]byte, error)
 }

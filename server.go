@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
 
 	"lukfugl/no-thanks-server/api"
 	"lukfugl/no-thanks-server/config"
@@ -18,6 +20,8 @@ var configPaths = config.Paths{
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+
 	ctx := context.Background()
 
 	fsCfg, err := config.LoadFirestoreConfig(configPaths)
