@@ -5,10 +5,16 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+
+	"cloud.google.com/go/firestore"
 )
 
 // HTTPHandler is a handler for POSTs to / with action payloads
-func HTTPHandler(w http.ResponseWriter, r *http.Request) {
+type HTTPHandler struct {
+	Firestore *firestore.Client
+}
+
+func (handler *HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		// TODO 405 Method Not Allowed
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -29,7 +35,7 @@ func HTTPHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = action.Execute()
+	err = action.Execute(r.Context(), handler.Firestore)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, fmt.Sprintf("err: %+v", err))

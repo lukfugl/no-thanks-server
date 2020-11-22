@@ -1,3 +1,5 @@
 certs/*.crt
 certs/*.key
+certs/*.json
 no-thanks-server
+config/*.json
