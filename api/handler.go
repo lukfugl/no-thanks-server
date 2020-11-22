@@ -15,8 +15,18 @@ type HTTPHandler struct {
 }
 
 func (handler *HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	headers := w.Header()
+	headers.Add("Access-Control-Allow-Origin", "*")
+	headers.Add("Access-Control-Allow-Methods", "POST")
+	headers.Add("Access-Control-Allow-Headers", "Content-Type")
+	headers.Add("Access-Control-Max-Age", "86400")
+
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
 	if r.Method != http.MethodPost {
-		// TODO 405 Method Not Allowed
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
