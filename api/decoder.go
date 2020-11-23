@@ -7,6 +7,7 @@ import (
 
 type actionDecoder struct {
 	CreateGame *CreateGameAction
+	JoinGame   *JoinGameAction
 }
 
 func decodeAction(bytes []byte) (Action, error) {
@@ -17,6 +18,9 @@ func decodeAction(bytes []byte) (Action, error) {
 	}
 	if decoder.CreateGame != nil {
 		return decoder.CreateGame, nil
+	}
+	if decoder.JoinGame != nil {
+		return decoder.JoinGame, nil
 	}
 	return nil, fmt.Errorf("unknown action")
 }

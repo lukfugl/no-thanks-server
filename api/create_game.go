@@ -12,11 +12,11 @@ import (
 // A CreateGameAction is an Action that creates a new Game, owned by the
 // user, along with Redirector pointing at it.
 type CreateGameAction struct {
-	HostUserID string
+	PlayerName string
 }
 
-// Execute logs the provided message
-func (a *CreateGameAction) Execute(ctx context.Context, fs *firestore.Client) ([]byte, error) {
+// Execute creates the game
+func (a *CreateGameAction) Execute(ctx context.Context, fs *firestore.Client, userID string) ([]byte, error) {
 	var slug *model.GameSlug
 	var err error
 	txErr := fs.RunTransaction(ctx, func(_ctx context.Context, t *firestore.Transaction) error {
@@ -29,7 +29,8 @@ func (a *CreateGameAction) Execute(ctx context.Context, fs *firestore.Client) ([
 			}
 		}
 
-		game := model.NewGame(fs, a.HostUserID)
+		game := model.NewGame(fs, userID)
+		game.AddPlayer(a.PlayerName, userID)
 		err = game.Save(t)
 		if err != nil {
 			return err

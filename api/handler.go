@@ -18,7 +18,7 @@ func (handler *HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	headers := w.Header()
 	headers.Add("Access-Control-Allow-Origin", "*")
 	headers.Add("Access-Control-Allow-Methods", "POST")
-	headers.Add("Access-Control-Allow-Headers", "Content-Type")
+	headers.Add("Access-Control-Allow-Headers", "Content-Type, X-User-ID")
 	headers.Add("Access-Control-Max-Age", "86400")
 
 	if r.Method == http.MethodOptions {
@@ -45,13 +45,19 @@ func (handler *HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := action.Execute(r.Context(), handler.Firestore)
+	userID := r.Header.Get("X-User-ID")
+	response, err := action.Execute(r.Context(), handler.Firestore, userID)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, fmt.Sprintf("err: %+v", err))
 		return
 	}
 
-	w.Header().Add("Content-Type", "text/plain")
+	if response == nil {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	w.Header().Add("Content-Type", "application/json")
 	w.Write(response)
 }

@@ -19,6 +19,18 @@ type GameSlug struct {
 	TargetGame *Game
 }
 
+// FindGameSlug creates an empty copy of a slug, which can then be loaded
+func FindGameSlug(fs *firestore.Client, slug string) *GameSlug {
+	path := "GameSlug/" + slug
+	return &GameSlug{
+		fs:         fs,
+		ref:        fs.Doc(path),
+		Path:       path,
+		ID:         slug,
+		TargetGame: nil,
+	}
+}
+
 // NewGameSlug creates a new, random GameSlug
 func NewGameSlug(fs *firestore.Client) *GameSlug {
 	indices := []int{0, 1, 2, 3, 4, 5, 6, 7, 8}
